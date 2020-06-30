@@ -54,3 +54,8 @@ Download_link :
 ​	http://likedge.top/think_and_review.apk
 
 ![huixiang_view](pics/huixiang_view.gif)
+
+后台讯息:
+
+![image-20200630113001520](image-20200630113001520.png)
+
