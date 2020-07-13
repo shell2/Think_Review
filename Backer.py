@@ -22,10 +22,23 @@ async def check_permit(websocket):
                 await websocket.send(str("user_id,"+recv_str.split(",")[1]+" is created"))
                 print("Writed at first time")
         elif recv_str.split(",")[0]=='dw':
-            with open("./user/"+recv_str.split(",")[1]+'.txt','a+')as f:
-                f.write(recv_str.split(",")[2]+","+recv_str.split(",")[3]+"\n")
-            print("Writed"+recv_str.split(",")[2],recv_str.split(",")[3])
-            await websocket.send(str("Writed ok"))
+            list_word_to_check=[]
+            flag_check = 0
+            f = open("./user_file/"+recv_str.split(",")[1]+'.txt')
+            for line_ in f:
+                print("list_word_tocheck:",line_)
+                if recv_str.split(",")[2]==line_.split(",")[0]:
+                    print("chongfu-------------------")
+                    flag_check=1
+                list_word_to_check.append(line_.split(",")[0])
+            #print(list_word_to_check)
+            if flag_check == 0:
+                with open("./user_file/"+recv_str.split(",")[1]+'.txt','a+')as f:
+                    f.write(recv_str.split(",")[2]+","+recv_str.split(",")[3]+"\n")
+                    await websocket.send(str("Writed ok"))
+            #print("Writed"+recv_str.split(",")[2],recv_str.split(",")[3])
+            else:
+                await websocket.send(str("重复"))
         elif recv_str.split(",")[0]=='get':
             f = open("./user/"+recv_str.split(",")[1]+'.txt')
             list_words_return = ''
