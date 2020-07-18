@@ -9,15 +9,16 @@ async def check_permit(websocket):
         print(recv_str)
         if recv_str.split(",")[0]=='device_id':
             try:
-                f = open("./user/"+recv_str.split(",")[1]+'.txt')
+                f = open("./user_file/"+recv_str.split(",")[1]+'.txt')
                 list_words_return = []
                 for line_ in f:
                     list_words_return.append(line_)
                 index=random.randint(0,len(list_words_return)-1)
-                print(list_words_return)
+                # print(list_words_return)
+                print(str(list_words_return[index]))
                 await websocket.send(str(list_words_return[index]))
             except:
-                with open("./user/"+recv_str.split(",")[1]+'.txt','a+')as f:
+                with open("./user_file/"+recv_str.split(",")[1]+'.txt','a+')as f:
                     f.write("user_id,"+recv_str.split(",")[1]+"\n")
                 await websocket.send(str("user_id,"+recv_str.split(",")[1]+" is created"))
                 print("Writed at first time")
@@ -40,17 +41,17 @@ async def check_permit(websocket):
             else:
                 await websocket.send(str("重复"))
         elif recv_str.split(",")[0]=='get':
-            f = open("./user/"+recv_str.split(",")[1]+'.txt')
+            f = open("./user_file/"+recv_str.split(",")[1]+'.txt')
             list_words_return = ''
             for line_ in f:
-                print(line_)
+                #print(line_)
                 list_words_return+=line_.strip('\n')+'-'
             print(list_words_return)
             await websocket.send(str(list_words_return))
         elif recv_str.split(",")[0]=='de':
-            with open("./user/"+recv_str.split(",")[1]+'.txt',encoding="utf-8") as f:
+            with open("./user_file/"+recv_str.split(",")[1]+'.txt',encoding="utf-8") as f:
                 lines = f.readlines()
-            with open("./user/"+recv_str.split(",")[1]+'.txt',"w",encoding="utf-8") as f_w:
+            with open("./user_file/"+recv_str.split(",")[1]+'.txt',"w",encoding="utf-8") as f_w:
                 print("dele:",recv_str.split(",")[2])
                 for line in lines:
                     print(line)
@@ -59,11 +60,17 @@ async def check_permit(websocket):
                     f_w.write(line)
             print(lines)
         return True
+
 async def send_msg(websocket,response_msg):
     while True:
         await websocket.send(response_msg)
 async def main_logic(websocket, path):
     await check_permit(websocket)
-start_server = websockets.serve(main_logic, 'local',port)
+
+
+
+start_server = websockets.serve(main_logic, '172.18.95.248', 623)
+
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
+
